@@ -31,6 +31,11 @@ RUN rm -fr /etc/apt/sources.list && touch /etc/apt/sources.list && \
 ADD scripts/install-btsync.py /tmp/install-btsync.py
 RUN python /tmp/install-btsync.py
 
+# Install BTSync runit service
+RUN mkdir /etc/service/btsync
+ADD config/btsync.runit.conf /etc/service/btsync/run
+RUN chmod +x /etc/service/btsync/run
+
 EXPOSE 8888
-CMD ["/usr/bin/btsync", "--config", "/etc/btsync.conf", "--no-daemon"]
+CMD ["/sbin/my_init"]
 

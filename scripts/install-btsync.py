@@ -19,6 +19,9 @@ def cmd(c):
 		pass
 	return (result.returncode == 0)
 
+def is_i386():
+	return subprocess.check_output(['uname', '-p']) != "x86_64"
+
 def sudo(s):
 	return cmd("sudo %s" % s)
 
@@ -38,7 +41,12 @@ def cp(s, d):
 sudo("apt-get install -y git curl tar gzip") or die("Unable to install tar utilities.")
 if exists("/tmp/btsync.tar.gz"):
 	sudo("rm -fr /tmp/btsync.tar.gz")
-sudo("curl http://download-new.utorrent.com/endpoint/btsync/os/linux-i386/track/stable > /tmp/btsync.tar.gz") or die("Unable to download BTSync tarball.")
+
+if not is_i386():
+	sudo("curl http://download-new.utorrent.com/endpoint/btsync/os/linux-i386/track/stable > /tmp/btsync.tar.gz") or die("Unable to download BTSync tarball.")
+else:
+	sudo("curl http://download-new.utorrent.com/endpoint/btsync/os/linux-x64/track/stable > /tmp/btsync.tar.gz") or die("Unable to download BTSync tarball.")
+
 sudo("tar xzvf /tmp/btsync.tar.gz -C /usr/bin btsync") or die("Unable to extract btsync binary.")
 if exists("/tmp/ngcdn"):
 	sudo("rm -fr /tmp/ngcdn")
