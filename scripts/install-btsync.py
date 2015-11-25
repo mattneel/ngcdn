@@ -26,6 +26,9 @@ def die(d):
 	print d
 	sys.exit(1)
 
+def is_docker():
+	 return os.path.isfile("/.dockerinit")
+
 def is_vagrant():
 	return os.path.isfile("/etc/is_vagrant_vm")
 	
@@ -41,5 +44,6 @@ if exists("/tmp/ngcdn"):
 	sudo("rm -fr /tmp/ngcdn")
 sudo("git clone --depth 1 https://github.com/mattneel/ngcdn.git /tmp/ngcdn") or die("Unable to clone ngcdn repository.")
 cp("/tmp/ngcdn/config/btsync.conf", "/etc/btsync.conf") or die("Unable to copy BTSync configuration.")
-cp("/tmp/ngcdn/config/btsync.upstart.conf", "/etc/init/btsync.conf") or die("Unable to copy BTSync daemon configuration.")
-sudo("service btsync start") or die("Unable to start BTSync service.")
+if not is_docker():
+	cp("/tmp/ngcdn/config/btsync.upstart.conf", "/etc/init/btsync.conf") or die("Unable to copy BTSync daemon configuration.")
+	sudo("service btsync start") or die("Unable to start BTSync service.")
