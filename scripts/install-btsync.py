@@ -52,6 +52,8 @@ if exists("/tmp/ngcdn"):
 	sudo("rm -fr /tmp/ngcdn")
 sudo("git clone --depth 1 https://github.com/mattneel/ngcdn.git /tmp/ngcdn") or die("Unable to clone ngcdn repository.")
 cp("/tmp/ngcdn/config/btsync.conf", "/etc/btsync.conf") or die("Unable to copy BTSync configuration.")
+sudo("mkdir /var/run/btsync") or die("Unable to create btsync run directory.")
+sudo("chmod 755 /var/run/btsync") or die("Unable to set permissions on btsync run directory.")
 if not is_docker():
 	cp("/tmp/ngcdn/config/btsync.upstart.conf", "/etc/init/btsync.conf") or die("Unable to copy BTSync daemon configuration.")
 	sudo("service btsync start") or die("Unable to start BTSync service.")
